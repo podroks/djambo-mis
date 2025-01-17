@@ -13,4 +13,5 @@ import "@/assets/main.css"
 /* add icons to the library */
 library.add(fas, far, fab)
 
+import "@/assets/base.css";
 createApp(App).use(Tres).mount("#app");
