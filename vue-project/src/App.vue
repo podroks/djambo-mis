@@ -4,7 +4,7 @@ import ATH from "@/pages/ATHView.vue"
 import { useFluidMovement } from "@/composables/player/useFluidMovement.js";
 import { useMoveForward } from "./composables/object/useMoveForward";
 
-const { position } = useFluidMovement(0.1);
+const { position } = useFluidMovement(0.04);
 const { positionZ: objectPositionZ } = useMoveForward();
 </script>
 
@@ -19,9 +19,9 @@ const { positionZ: objectPositionZ } = useMoveForward();
         <TresMeshStandardMaterial color="blue" />
       </TresMesh>
 
-      <TresMesh :position="[5, 3, objectPositionZ]">
+      <TresMesh :position="[7, 4, 0]">
         <TresBoxGeometry :args="[0.5, 0.5, 0.5]" />
-        <TresMeshStandardMaterial color="#236E43" />
+        <TresMeshStandardMaterial color="#77CA84" />
       </TresMesh>
 
       <TresAmbientLight :intensity="1" />

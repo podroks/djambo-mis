@@ -1,6 +1,7 @@
+import { MAX_X, MAX_Y, MIN_X, MIN_Y } from "@/constants/position";
 import { ref, onMounted, onUnmounted } from "vue";
 
-export function useFluidMovement(speed = 0.1) {
+export function useFluidMovement(speed = 0.05) {
   const position = ref({ x: 0, y: 0 });
 
   const ArrowUp = "ArrowUp";
@@ -48,10 +49,10 @@ export function useFluidMovement(speed = 0.1) {
   };
 
   const animate = () => {
-    if (keys.ArrowUp) position.value.y += speed;
-    if (keys.ArrowDown) position.value.y -= speed;
-    if (keys.ArrowLeft) position.value.x -= speed;
-    if (keys.ArrowRight) position.value.x += speed;
+    if (keys.ArrowUp && position.value.y < MAX_Y) position.value.y += speed;
+    if (keys.ArrowDown && position.value.y > MIN_Y) position.value.y -= speed;
+    if (keys.ArrowLeft && position.value.x > MIN_X) position.value.x -= speed;
+    if (keys.ArrowRight && position.value.x < MAX_X) position.value.x += speed;
     requestAnimationFrame(animate);
   };
 
