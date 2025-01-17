@@ -9,7 +9,7 @@ const { positionZ: objectPositionZ } = useMoveForward();
 </script>
 
 <template>
-  <div class="canvas-container">
+  <div class="relative canvas-container">
     <TresCanvas clear-color="#000706">
       <!-- <TresAmbientLight :intensity="0.5" /> -->
       <TresPerspectiveCamera :position="[0, 0, 10]" :look-at="[0, 0, 0]" />

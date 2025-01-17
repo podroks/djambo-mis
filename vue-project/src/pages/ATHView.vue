@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div class="flex fixed h-lvh w-full">
+    <div class="flex absolute h-full w-full">
         <div class="flex w-full justify-end">
             <Scoring/>
         </div>
