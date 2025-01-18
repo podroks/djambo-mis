@@ -2,10 +2,11 @@
 import { TresCanvas } from "@tresjs/core";
 import ATH from "@/pages/ATHView.vue";
 import { useMoveForward } from "./composables/object/useMoveForward";
-import { ref, useTemplateRef } from "vue";
+import { ref, useTemplateRef, watch } from "vue";
 import { onMounted } from "vue";
 import Player from "./components/threeJs/Player.vue";
 import Virus from "./components/threeJs/Virus.vue";
+import { MAX_X, MAX_Y, MIN_X, MIN_Y } from "./constants/position";
 
 const { positionZ: objectPositionZ } = useMoveForward();
 
@@ -14,14 +15,45 @@ const playerPosition = ref({ x: 0, y: 0, z: 0 });
 
 const objects = ref([]);
 
-onMounted(() => {
-  for (var i = 0; i < 5; i++) {
-    objects.value.push({
-      x: Math.random() * 14 - 7,
-      y: Math.random() * 8 - 4,
-    });
+function getRandom(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function generateVirus() {
+  const size = [getRandom(1.5, 0.8), getRandom(1.5, 0.8), getRandom(1.5, 0.8)];
+  const positionInitial = [getRandom(MIN_X, MAX_X), getRandom(MIN_Y, MAX_Y), 0];
+  const id = generateUID();
+  if (objects.value.length <= 25) {
+    objects.value.push({ id, size, positionInitial });
   }
+}
+
+function destroyVirus(id) {
+  objects.value = objects.value.filter((obj) => obj.id !== id);
+}
+
+function generateUID() {
+  return "id" + new Date().getTime();
+}
+
+const timeoutRef = ref(null); // A utiliser pour stoper la boucle infini
+function loopIntervalRendom(min = 600, max = 1300) {
+  timeoutRef.value = setTimeout(() => {
+    generateVirus();
+    timeoutRef.value = loopIntervalRendom(min, max);
+  }, getRandom(min, max));
+}
+
+onMounted(() => {
+  loopIntervalRendom();
 });
+
+watch(
+  () => objects.value.length,
+  (x) => {
+    console.log("Debug: " + x + " objects in the scene");
+  }
+);
 </script>
 
 <template>
@@ -39,7 +71,16 @@ onMounted(() => {
         "
       />
 
-      <Virus :playerPosition :playerMesh="player?.mesh" />
+      <!-- <Virus :playerPosition :playerMesh="player?.mesh" /> -->
+      <Virus
+        v-for="obj in objects"
+        :key="obj.id"
+        :size="obj.size"
+        :position-initial="obj.positionInitial"
+        :playerPosition
+        :playerMesh="player?.mesh"
+        @destroy="() => destroyVirus(obj.id)"
+      />
 
       <!-- ref="virus" -->
       <!-- <TresMesh

@@ -8,7 +8,7 @@ defineProps({
     default: () => [0.5, 0.5, 1],
   },
 });
-const emit = defineEmits("position");
+const emit = defineEmits(["position"]);
 
 const mesh = ref(null);
 

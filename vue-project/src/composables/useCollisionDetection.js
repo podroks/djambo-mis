@@ -4,7 +4,8 @@ import { Box3 } from "three";
 export function useCollisionDetection(
   playerMeshRef,
   virusMeshRef,
-  playerPositionRef
+  playerPositionRef,
+  meshPositionZ
 ) {
   const collision = ref(false);
 
@@ -18,7 +19,7 @@ export function useCollisionDetection(
   };
 
   watch(
-    playerPositionRef,
+    () => ({ ...playerPositionRef.value, meshPositionZ: meshPositionZ.value }),
     () => {
       detectCollision();
     },
