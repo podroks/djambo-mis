@@ -9,7 +9,7 @@ import Virus from "./components/threeJs/Virus.vue";
 import { MAX_X, MAX_Y, MIN_X, MIN_Y } from "./constants/position";
 import Cookie from "./components/threeJs/Cookie.vue";
 
-const MAXIMUM_OBJECT = 23;
+const MAXIMUM_OBJECT = 12;
 
 const player = useTemplateRef("player");
 const playerPosition = ref({ x: 0, y: 0, z: 0 });

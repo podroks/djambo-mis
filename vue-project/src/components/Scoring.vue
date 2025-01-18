@@ -9,10 +9,35 @@ const props = defineProps({
     }
 })
 const scoreMatrix = ref(props.score)
-onMounted (() => {
-    setInterval(() => {
+
+onMounted(() => {
+    console.log('score', props.score)
+    console.log('scoreMatrix', scoreMatrix.value)
+    startScoring()
+})
+
+function startScoring () {
+    console.log('start scoring')
+    scoreMatrix.value = setInterval(() => {
         scoreMatrix.value += 300
-    }, 1000)
+    }, 1000);
+};
+
+function pauseScoring () {
+    console.log('pause scoring')
+    clearInterval(scoreMatrix.value);
+};
+
+function resetScoring () {
+    console.log('reset scoring')
+    startScoring();
+    scoreMatrix.value = props.score
+};
+
+defineExpose({
+    startScoring,
+    pauseScoring,
+    resetScoring,
 })
 </script>
 

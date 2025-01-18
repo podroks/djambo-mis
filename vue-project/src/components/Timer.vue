@@ -12,7 +12,6 @@ const hours = ref(0);
 const minutes = ref(0);
 const seconds = ref(0);
 const timer = ref(null);
-const statePause = reactive(props.pauseTimer);
 
 const timerToDisplay = computed(() => {
   const pad = (num) => String(num).padStart(2, '0');
@@ -45,7 +44,7 @@ function pauseTimer () {
 };
 
 function resetTimer () {
-  pauseTimer();
+  startTimer();
   hours.value = 0;
   minutes.value = 0;
   seconds.value = 0;
