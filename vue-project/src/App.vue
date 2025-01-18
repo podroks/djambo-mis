@@ -8,7 +8,6 @@ import Player from "./components/threeJs/Player.vue";
 import Virus from "./components/threeJs/Virus.vue";
 import { MAX_X, MAX_Y, MIN_X, MIN_Y } from "./constants/position";
 
-const { position } = useFluidMovement(0.05);
 const { positionZ: objectPositionZ } = useMoveForward();
 
 const player = useTemplateRef("player");
