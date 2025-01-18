@@ -1,30 +1,54 @@
 <script setup lang="ts">
 import { TresCanvas } from "@tresjs/core";
-import ATH from "@/pages/ATHView.vue"
-import { useFluidMovement } from "@/composables/player/useFluidMovement.js";
+import ATH from "@/pages/ATHView.vue";
 import { useMoveForward } from "./composables/object/useMoveForward";
+import { ref, useTemplateRef } from "vue";
+import { onMounted } from "vue";
+import Player from "./components/threeJs/Player.vue";
+import Virus from "./components/threeJs/Virus.vue";
 
-const { position } = useFluidMovement(0.04);
 const { positionZ: objectPositionZ } = useMoveForward();
+
+const player = useTemplateRef("player");
+const playerPosition = ref({ x: 0, y: 0, z: 0 });
+
+const objects = ref([]);
+
+onMounted(() => {
+  for (var i = 0; i < 5; i++) {
+    objects.value.push({
+      x: Math.random() * 14 - 7,
+      y: Math.random() * 8 - 4,
+    });
+  }
+});
 </script>
 
 <template>
   <div class="relative canvas-container">
     <TresCanvas clear-color="#000706">
-      <!-- <TresAmbientLight :intensity="0.5" /> -->
+      <TresAmbientLight :intensity="1" />
       <TresPerspectiveCamera :position="[0, 0, 10]" :look-at="[0, 0, 0]" />
 
-      <TresMesh :position="[position.x, position.y, 0]">
-        <TresBoxGeometry :args="[0.5, 0.5, 1]" />
-        <TresMeshStandardMaterial color="blue" />
-      </TresMesh>
+      <Player
+        ref="player"
+        @position="
+          (newPos) => {
+            playerPosition = newPos;
+          }
+        "
+      />
 
-      <TresMesh :position="[7, 4, 0]">
-        <TresBoxGeometry :args="[0.5, 0.5, 0.5]" />
-        <TresMeshStandardMaterial color="#77CA84" />
-      </TresMesh>
+      <Virus :playerPosition :playerMesh="player?.mesh" />
 
-      <TresAmbientLight :intensity="1" />
+      <!-- ref="virus" -->
+      <!-- <TresMesh
+        v-for="obj in objects"
+        :position="[obj.x, obj.y, objectPositionZ]"
+      >
+        <TresBoxGeometry :args="[1, 1, 0.5]" />
+        <TresMeshStandardMaterial :color="!collision ? '#77CA84' : 'red'" />
+      </TresMesh> -->
     </TresCanvas>
     <ATH></ATH>
   </div>
