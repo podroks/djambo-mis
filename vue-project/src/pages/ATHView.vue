@@ -1,15 +1,15 @@
 <script setup>
-    import { useTemplateRef } from 'vue'
+    import { ref, useTemplateRef } from 'vue'
 
     import Scoring from "@/components/Scoring.vue"
     import Health from "@/components/Health.vue"
-    import Energy from "@/components/Energy.vue"
     import Timer from "@/components/Timer.vue"
     import HardwarePlayer from "@/components/HardwarePlayer.vue"
     import ActionsBar from "@/components/ActionsBar.vue"
 
     const timerRef = useTemplateRef('timer')
     const scoringRef = useTemplateRef('scoring')
+    const countHit = ref(null)
 
 
     function startControl () {
@@ -32,12 +32,19 @@
         if(timerRef.value) {
             timerRef.value.resetTimer()
             scoringRef.value.resetScoring()
+            countHit.value = 0
             emit('restartGame')
         }
     }
 
+    function onHitPlayerHealth () {
+        countHit.value++
+    }
 
-    const emit = defineEmits(['startGame', 'pauseGame', 'restartGame'])
+    defineExpose({
+        onHitPlayerHealth
+    });
+    const emit = defineEmits(['startGame', 'pauseGame', 'restartGame', 'resetHitHealth'])
 </script>
 
 <template>
@@ -48,7 +55,7 @@
         </div>
         <div class="flex justify-between">
             <div class="flex flex-col justify-start w-1/3">
-                <Health/>
+                <Health ref="health" :hit-on-health="countHit"/>
             </div>
             <ActionsBar @start-action="startControl" @pause-action="pauseControl" @restart-action="restartControl"/>
             <HardwarePlayer/>

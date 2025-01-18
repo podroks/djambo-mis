@@ -68,16 +68,22 @@ export function useFluidMovement (speed = 0.05) {
     window.removeEventListener("keyup", handleKeyUp);
   });
 
+  function onStart () {
+    currentSpeed.value = speed
+  }
+
   function onPause () {
     currentSpeed.value = 0
   }
 
   function onResume () {
+    position.value = { x: 0, y: 0 }
     currentSpeed.value = speed
   }
 
   return {
     position,
+    onStart,
     onPause,
     onResume,
   };

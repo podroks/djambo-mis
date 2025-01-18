@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, useTemplateRef, watch } from "vue";
+import { onMounted, ref, useTemplateRef, watch, watchEffect } from "vue";
 import { useFluidMovement } from "@/composables/player/useFluidMovement";
 import { generateUID } from "@/utils/generation";
 import Projectile from "./Projectile.vue";
@@ -9,7 +9,15 @@ const props = defineProps({
     type: Array,
     default: () => [0.5, 0.5, 1],
   },
+  start: {
+    type: Boolean,
+    default: false,
+  },
   pause: {
+    type: Boolean,
+    default: false,
+  },
+  restart: {
     type: Boolean,
     default: false,
   },
@@ -19,7 +27,7 @@ const emit = defineEmits(["position"]);
 const mesh = ref(null);
 const isHit = ref(false);
 
-const { position, onPause, onResume } = useFluidMovement(0.04);
+const { position, onStart, onPause, onResume } = useFluidMovement(0.04);
 
 watch(
   () => position.value,
@@ -29,13 +37,13 @@ watch(
   { deep: true }
 );
 
-watch(
-  () => props.pause,
-  (isPause) => {
-    // console.log("props.pause", props.pause);
-    if (isPause) {
+watchEffect(
+  () => {
+    if (props.start) {
+      onStart();
+    } else if (props.pause) {
       onPause();
-    } else {
+    } else if (props.restart) {
       onResume();
     }
   }

@@ -14,10 +14,13 @@ import { generateUID, getRandom } from "./utils/generation";
 const MAXIMUM_OBJECT = 20;
 
 const player = useTemplateRef("player");
+const athRef = useTemplateRef('ath')
 const playerPosition = ref({ x: 0, y: 0, z: 0 });
 const objects = ref([]);
 const timeoutRef = ref(null); // A utiliser pour stoper la boucle infini
+const stateStart = ref(false);
 const statePause = ref(false);
+const stateRestart = ref(false);
 
 onMounted(() => {
   loopIntervalRendom();
@@ -63,25 +66,42 @@ function loopIntervalRendom(
   }, getRandom(min, max));
 }
 
+function start() {
+  stateStart.value = true;
+  statePause.value = false;
+  stateRestart.value = false;
+}
+
 function pause() {
+  stateStart.value = false;
   statePause.value = true;
+  stateRestart.value = false;
+}
+
+function restart() {
+  stateStart.value = false;
+  statePause.value = false;
+  stateRestart.value = true;
 }
 
 onMounted(() => {
   loopIntervalRendom();
-
   loopIntervalRendom(2000, 5000, generateCookie);
 });
 
 // Player comportement
 function onHitPlayer() {
   if (player.value) {
-    player.value.onHitPlayer();
+    player.value.onHitPlayer()
+  }
+  if(athRef.value) {
+    athRef.value.onHitPlayerHealth()
   }
 }
+
 function onStopHitPlayer() {
   if (player.value) {
-    player.value.onStopHitPlayer();
+    player.value.onStopHitPlayer()
   }
 }
 
@@ -107,7 +127,9 @@ function onStopHitPlayer() {
             playerPosition = newPos;
           }
         "
+        :start="stateStart"
         :pause="statePause"
+        :restart="stateRestart"
       />
 
       <template v-for="obj in objects" :key="obj.id">
@@ -139,7 +161,7 @@ function onStopHitPlayer() {
         </TresGroup>
       </Suspense> -->
     </TresCanvas>
-    <ATH @start-game="" @pause-game="pause" @restart-game="" />
+    <ATH ref="ath" @start-game="start" @pause-game="pause" @restart-game="restart"/>
   </div>
 </template>
 

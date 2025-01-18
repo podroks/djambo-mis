@@ -1,7 +1,9 @@
 import { ref, onMounted } from "vue";
 
-export function useMoveForward(initialPositionZ = -50, speed = 0.1) {
+export function useMoveForward (initialPositionZ = -50, speed = 0.2) {
   const positionZ = ref(initialPositionZ);
+  const currentSpeed = ref(speed)
+
 
   const animate = () => {
     positionZ.value += speed;
@@ -12,7 +14,23 @@ export function useMoveForward(initialPositionZ = -50, speed = 0.1) {
     animate();
   });
 
+  function onStart () {
+    currentSpeed.value = speed
+  }
+
+  function onPause () {
+    currentSpeed.value = 0
+  }
+
+  function onResume () {
+    position.value = { x: 0, y: 0 }
+    currentSpeed.value = speed
+  }
+
   return {
     positionZ,
+    onStart,
+    onPause,
+    onResume,
   };
 }
