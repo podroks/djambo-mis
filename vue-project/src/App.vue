@@ -21,12 +21,12 @@ onMounted(() => {
   loopIntervalRendom();
 });
 
-watch(
-  () => objects.value.length,
-  (x) => {
-    console.log("Debug: " + x + " objects in the scene");
-  }
-);
+// watch(
+//   () => objects.value.length,
+//   (x) => {
+//     console.log("Debug: " + x + " objects in the scene");
+//   }
+// );
 
 function getRandom(min, max) {
   return Math.random() * (max - min) + min;
@@ -78,13 +78,6 @@ onMounted(() => {
 
   loopIntervalRendom(2000, 5000, generateCookie);
 });
-
-watch(
-  () => objects.value.length,
-  (x) => {
-    console.log("Debug: " + x + " objects in the scene");
-  }
-);
 
 // Player comportement
 function onHitPlayer() {

@@ -30,7 +30,7 @@ watch(
 watch(
   () => props.pause,
   (isPause) => {
-    console.log("props.pause", props.pause);
+    // console.log("props.pause", props.pause);
     if (isPause) {
       onPause();
     } else {

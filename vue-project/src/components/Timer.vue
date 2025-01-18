@@ -1,29 +1,33 @@
 <script setup>
-import { ref, computed, onMounted, watch, reactive } from 'vue';
+import { ref, computed, onMounted, watch, reactive } from "vue";
 
 const props = defineProps({
-    pauseTimer: {
-      type: Boolean,
-      default: true,
-    },
-})
+  pauseTimer: {
+    type: Boolean,
+    default: true,
+  },
+});
 
 const hours = ref(0);
 const minutes = ref(0);
 const seconds = ref(0);
-const timer = ref(null);
+const timerInterval = ref(null);
 
 const timerToDisplay = computed(() => {
-  const pad = (num) => String(num).padStart(2, '0');
+  const pad = (num) => String(num).padStart(2, "0");
   return `${pad(hours.value)}:${pad(minutes.value)}:${pad(seconds.value)}`;
 });
 
 onMounted(() => {
-  startTimer()
-})
+  startTimer();
+});
 
-function startTimer () {
-  timer.value = setInterval(() => {
+function startTimer() {
+  if (timerInterval.value) {
+    return;
+  }
+
+  timerInterval.value = setInterval(() => {
     seconds.value++;
 
     if (seconds.value >= 60) {
@@ -36,26 +40,25 @@ function startTimer () {
       hours.value++;
     }
   }, 1000);
-};
+}
 
-function pauseTimer () {
-  clearInterval(timer.value);
-  timer.value = null;
-};
+function pauseTimer() {
+  clearInterval(timerInterval.value);
+  timerInterval.value = null;
+}
 
-function resetTimer () {
+function resetTimer() {
   startTimer();
   hours.value = 0;
   minutes.value = 0;
   seconds.value = 0;
-};
+}
 
 defineExpose({
   startTimer,
   pauseTimer,
   resetTimer,
-})
-
+});
 </script>
 
 <template>
