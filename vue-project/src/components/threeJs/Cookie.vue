@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { useCollisionDetection } from "@/composables/useCollisionDetection";
 import { useMoveForward } from "@/composables/object/useMoveForward";
 
@@ -19,6 +19,18 @@ const props = defineProps({
     type: Object,
     default: () => ({ x: 0, y: 0, z: 0 }),
   },
+  start: {
+    type: Boolean,
+    default: false,
+  },
+  pause: {
+    type: Boolean,
+    default: false,
+  },
+  restart: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(["destroy"]);
@@ -27,7 +39,7 @@ const playerMeshRef = computed(() => props.playerMesh);
 const cookieMeshRef = ref(null);
 const playerPositionRef = computed(() => props.playerPosition);
 
-const { positionZ } = useMoveForward(-50, 0.25);
+const { positionZ, onStart, onPause, onResume } = useMoveForward(-50, 0.25);
 const { hasCollisionPlayer } = useCollisionDetection(
   playerMeshRef,
   cookieMeshRef,
@@ -50,6 +62,18 @@ watch(
   (hasCollision) => {
     if (hasCollision) {
       emit("destroy");
+    }
+  }
+);
+
+watchEffect(
+  () => {
+    if (props.start) {
+      onStart();
+    } else if (props.pause) {
+      onPause();
+    } else if (props.restart) {
+      onResume();
     }
   }
 );

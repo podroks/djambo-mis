@@ -118,5 +118,8 @@ defineExpose({
     :uid="projectile.id"
     :position="projectile.position"
     @destroy="() => destroyProjectile(projectile.id)"
+    :start="start"
+    :pause="pause"
+    :restart="restart"
   />
 </template>

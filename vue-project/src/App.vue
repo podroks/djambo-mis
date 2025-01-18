@@ -150,6 +150,9 @@ function onDestroyProjectile(id) {
           @destroy-projectile="onDestroyProjectile"
           @hit-player="onHitPlayer"
           @stop-hit-player="onStopHitPlayer"
+          :start="stateStart"
+          :pause="statePause"
+          :restart="stateRestart"
         />
 
         <Cookie
@@ -160,6 +163,9 @@ function onDestroyProjectile(id) {
           :playerMesh="player?.mesh"
           :playerProjectiles="player?.projectileRefs"
           @destroy="() => destroyObject(obj.id)"
+          :start="stateStart"
+          :pause="statePause"
+          :restart="stateRestart"
         />
       </template>
       <!-- <Suspense>

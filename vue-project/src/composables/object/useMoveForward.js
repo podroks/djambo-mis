@@ -6,7 +6,7 @@ export function useMoveForward (initialPositionZ = -50, speed = 0.2) {
 
 
   const animate = () => {
-    positionZ.value += speed;
+    positionZ.value += currentSpeed.value;
     requestAnimationFrame(animate);
   };
 
@@ -23,7 +23,7 @@ export function useMoveForward (initialPositionZ = -50, speed = 0.2) {
   }
 
   function onResume () {
-    position.value = { x: 0, y: 0 }
+    positionZ.value = initialPositionZ
     currentSpeed.value = speed
   }
 

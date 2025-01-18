@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { useCollisionDetection } from "@/composables/useCollisionDetection";
 import { useMoveForward } from "@/composables/object/useMoveForward";
 
@@ -22,6 +22,18 @@ const props = defineProps({
     type: Object,
     default: () => ({ x: 0, y: 0, z: 0 }),
   },
+  start: {
+    type: Boolean,
+    default: false,
+  },
+  pause: {
+    type: Boolean,
+    default: false,
+  },
+  restart: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits([
@@ -36,7 +48,7 @@ const virusMeshRef = ref(null);
 const playerPositionRef = computed(() => props.playerPosition);
 const playerProjectileMeshsRef = computed(() => props.playerProjectiles);
 
-const { positionZ } = useMoveForward();
+const { positionZ, onStart, onPause, onResume } = useMoveForward();
 const { hasCollisionPlayer, collisionProjectileId } = useCollisionDetection(
   playerMeshRef,
   virusMeshRef,
@@ -71,6 +83,18 @@ watch(
       emit("hit-player");
     } else {
       emit("stop-hit-player");
+    }
+  }
+);
+
+watchEffect(
+  () => {
+    if (props.start) {
+      onStart();
+    } else if (props.pause) {
+      onPause();
+    } else if (props.restart) {
+      onResume();
     }
   }
 );
