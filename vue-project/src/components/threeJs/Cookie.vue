@@ -28,9 +28,10 @@ const cookieMeshRef = ref(null);
 const playerPositionRef = computed(() => props.playerPosition);
 
 const { positionZ } = useMoveForward(-50, 0.25);
-const { collision } = useCollisionDetection(
+const { hasCollisionPlayer } = useCollisionDetection(
   playerMeshRef,
   cookieMeshRef,
+  [],
   playerPositionRef,
   positionZ
 );
@@ -45,7 +46,7 @@ watch(
 );
 
 watch(
-  () => collision.value,
+  () => hasCollisionPlayer.value,
   (hasCollision) => {
     if (hasCollision) {
       emit("destroy");
@@ -67,6 +68,6 @@ onBeforeUnmount(() => {
     :scale="[1, 1, 0.1]"
   >
     <TresTorusGeometry :args="[size, size * 0.6, 16, 40]" />
-    <TresMeshStandardMaterial :color="!collision ? '#77CA84' : 'red'" />
+    <TresMeshStandardMaterial color="#77CA84" />
   </TresMesh>
 </template>

@@ -64,8 +64,15 @@ onMounted(() => {
 });
 
 const projectiles = ref([]);
+const canShoot = ref(true);
+const shootDelay = ref(200);
+
 function shoot(event) {
-  if (event.keyCode === 32) {
+  if (canShoot.value && event.keyCode === 32) {
+    canShoot.value = false;
+    setTimeout(() => {
+      canShoot.value = true;
+    }, shootDelay.value);
     projectiles.value.push({
       id: generateUID(),
       position: {
@@ -83,13 +90,13 @@ function destroyProjectile(id) {
   );
 }
 
-watch(
-  () => projectileRefs.value,
-  (newVal) => console.log(newVal, projectileRefs.value),
-  { deep: true }
-);
-
-defineExpose({ mesh, onHitPlayer, onStopHitPlayer, projectileRefs });
+defineExpose({
+  mesh,
+  onHitPlayer,
+  onStopHitPlayer,
+  projectileRefs,
+  destroyProjectile,
+});
 </script>
 
 <template>
@@ -108,6 +115,7 @@ defineExpose({ mesh, onHitPlayer, onStopHitPlayer, projectileRefs });
     v-for="projectile in projectiles"
     :key="projectile.id"
     ref="projectileRefs"
+    :uid="projectile.id"
     :position="projectile.position"
     @destroy="() => destroyProjectile(projectile.id)"
   />

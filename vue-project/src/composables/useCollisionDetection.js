@@ -4,10 +4,12 @@ import { Box3 } from "three";
 export function useCollisionDetection(
   playerMeshRef,
   virusMeshRef,
+  playerProjectileMeshsRef,
   playerPositionRef,
   meshPositionZ
 ) {
-  const collision = ref(false);
+  const hasCollisionPlayer = ref(false);
+  const collisionProjectileId = ref(null);
 
   const detectCollision = () => {
     if (!playerMeshRef.value || !virusMeshRef.value) return;
@@ -15,11 +17,34 @@ export function useCollisionDetection(
     const box1 = new Box3().setFromObject(playerMeshRef.value);
     const box2 = new Box3().setFromObject(virusMeshRef.value);
 
-    collision.value = box1.intersectsBox(box2);
+    hasCollisionPlayer.value = box1.intersectsBox(box2);
+
+    if (
+      !hasCollisionPlayer.value &&
+      playerProjectileMeshsRef.value?.length > 0
+    ) {
+      let i = 0;
+      while (
+        !collisionProjectileId.value &&
+        i < playerProjectileMeshsRef.value.length
+      ) {
+        const boxProjectile = new Box3().setFromObject(
+          playerProjectileMeshsRef.value[i].projectileRef
+        );
+        if (boxProjectile.intersectsBox(box2)) {
+          collisionProjectileId.value =
+            playerProjectileMeshsRef.value[i].projectileRef.uid;
+        }
+        i++;
+      }
+    }
   };
 
   watch(
-    () => ({ ...playerPositionRef.value, meshPositionZ: meshPositionZ.value }),
+    () => ({
+      ...playerPositionRef.value,
+      meshPositionZ: meshPositionZ.value ?? 0,
+    }),
     () => {
       detectCollision();
     },
@@ -27,6 +52,7 @@ export function useCollisionDetection(
   );
 
   return {
-    collision,
+    hasCollisionPlayer,
+    collisionProjectileId,
   };
 }

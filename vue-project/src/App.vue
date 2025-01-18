@@ -105,6 +105,12 @@ function onStopHitPlayer() {
   }
 }
 
+function onDestroyProjectile(id) {
+  if (player.value) {
+    player.value.destroyProjectile(id);
+  }
+}
+
 // const onModelLoaded = (gltf) => {
 //   gltf.scene.traverse((child) => {
 //     console.log(child.isMesh, child.material);
@@ -141,6 +147,7 @@ function onStopHitPlayer() {
           :playerMesh="player?.mesh"
           :playerProjectiles="player?.projectileRefs"
           @destroy="() => destroyObject(obj.id)"
+          @destroy-projectile="onDestroyProjectile"
           @hit-player="onHitPlayer"
           @stop-hit-player="onStopHitPlayer"
         />

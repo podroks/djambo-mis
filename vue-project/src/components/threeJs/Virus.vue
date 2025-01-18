@@ -24,26 +24,25 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["destroy", "hit-player", "stop-hit-player"]);
+const emit = defineEmits([
+  "destroy",
+  "destroy-projectile",
+  "hit-player",
+  "stop-hit-player",
+]);
 
 const playerMeshRef = computed(() => props.playerMesh);
 const virusMeshRef = ref(null);
 const playerPositionRef = computed(() => props.playerPosition);
+const playerProjectileMeshsRef = computed(() => props.playerProjectiles);
 
 const { positionZ } = useMoveForward();
-const { collision } = useCollisionDetection(
+const { hasCollisionPlayer, collisionProjectileId } = useCollisionDetection(
   playerMeshRef,
   virusMeshRef,
+  playerProjectileMeshsRef,
   playerPositionRef,
   positionZ
-);
-
-watch(
-  () => props.playerProjectiles,
-  (newVal) => {
-    console.log(newVal, newVal[0]);
-  },
-  { deep: true }
 );
 
 watch(
@@ -56,7 +55,17 @@ watch(
 );
 
 watch(
-  () => collision.value,
+  () => collisionProjectileId.value,
+  (hasCollision) => {
+    if (hasCollision) {
+      emit("destroy");
+      emit("destroy-projectile", hasCollision);
+    }
+  }
+);
+
+watch(
+  () => hasCollisionPlayer.value,
   (hasCollision) => {
     if (hasCollision) {
       emit("hit-player");
