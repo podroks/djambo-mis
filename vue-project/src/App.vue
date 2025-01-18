@@ -61,18 +61,34 @@ watch(
     <TresCanvas clear-color="#000706">
       <TresAmbientLight :intensity="1" />
       <TresPerspectiveCamera :position="[0, 0, 10]" :look-at="[0, 0, 0]" />
+      <Player
+        ref="player"
+        @position="
+          (newPos) => {
+            playerPosition = newPos;
+          }
+        "
+      />
 
-      <TresMesh :position="[position.x, position.y, 0]">
-        <TresBoxGeometry :args="[0.5, 0.5, 1]" />
-        <TresMeshStandardMaterial color="blue" />
-      </TresMesh>
+      <!-- <Virus :playerPosition :playerMesh="player?.mesh" /> -->
+      <Virus
+        v-for="obj in objects"
+        :key="obj.id"
+        :size="obj.size"
+        :position-initial="obj.positionInitial"
+        :playerPosition
+        :playerMesh="player?.mesh"
+        @destroy="() => destroyVirus(obj.id)"
+      />
 
-      <TresMesh :position="[7, 4, 0]">
-        <TresBoxGeometry :args="[0.5, 0.5, 0.5]" />
-        <TresMeshStandardMaterial color="#77CA84" />
-      </TresMesh>
-
-      <TresAmbientLight :intensity="1" />
+      <!-- ref="virus" -->
+      <!-- <TresMesh
+        v-for="obj in objects"
+        :position="[obj.x, obj.y, objectPositionZ]"
+      >
+        <TresBoxGeometry :args="[1, 1, 0.5]" />
+        <TresMeshStandardMaterial :color="!collision ? '#77CA84' : 'red'" />
+      </TresMesh> -->
     </TresCanvas>
     <ATH></ATH>
   </div>
