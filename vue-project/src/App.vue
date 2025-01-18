@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { TresCanvas } from "@tresjs/core";
 import ATH from "@/pages/ATHView.vue";
-import { useMoveForward } from "./composables/object/useMoveForward";
-import { ref, useTemplateRef, watch } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { onMounted } from "vue";
 import Player from "./components/threeJs/Player.vue";
 import Virus from "./components/threeJs/Virus.vue";
 import { MAX_X, MAX_Y, MIN_X, MIN_Y } from "./constants/position";
 import Cookie from "./components/threeJs/Cookie.vue";
+import { generateUID, getRandom } from "./utils/generation";
 
-const MAXIMUM_OBJECT = 12;
+// import { GLTFModel } from "@tresjs/cientos";
+
+const MAXIMUM_OBJECT = 20;
 
 const player = useTemplateRef("player");
 const playerPosition = ref({ x: 0, y: 0, z: 0 });
@@ -27,10 +29,6 @@ onMounted(() => {
 //     console.log("Debug: " + x + " objects in the scene");
 //   }
 // );
-
-function getRandom(min, max) {
-  return Math.random() * (max - min) + min;
-}
 
 function generateVirus() {
   const size = [getRandom(1.5, 0.8), getRandom(1.5, 0.8), getRandom(1.5, 0.8)];
@@ -52,10 +50,6 @@ function generateCookie() {
 
 function destroyObject(id) {
   objects.value = objects.value.filter((obj) => obj.id !== id);
-}
-
-function generateUID() {
-  return "id" + new Date().getTime() + getRandom(0, 20000);
 }
 
 function loopIntervalRendom(
@@ -90,6 +84,15 @@ function onStopHitPlayer() {
     player.value.onStopHitPlayer();
   }
 }
+
+// const onModelLoaded = (gltf) => {
+//   gltf.scene.traverse((child) => {
+//     console.log(child.isMesh, child.material);
+//     if (child.isMesh && child.material) {
+//       child.material.color = new Color(0x00ff00);
+//     }
+//   });
+// };
 </script>
 
 <template>
@@ -114,6 +117,7 @@ function onStopHitPlayer() {
           :position-initial="obj.positionInitial"
           :playerPosition
           :playerMesh="player?.mesh"
+          :playerProjectiles="player?.projectileRefs"
           @destroy="() => destroyObject(obj.id)"
           @hit-player="onHitPlayer"
           @stop-hit-player="onStopHitPlayer"
@@ -125,9 +129,15 @@ function onStopHitPlayer() {
           :position-initial="obj.positionInitial"
           :playerPosition
           :playerMesh="player?.mesh"
+          :playerProjectiles="player?.projectileRefs"
           @destroy="() => destroyObject(obj.id)"
         />
       </template>
+      <!-- <Suspense>
+        <TresGroup :rotation="[Math.PI / 2, 0, 0]" :scale="[0.4, 0.4, 0.4]">
+          <GLTFModel path="/models/cookie.gltf" @loaded="onModelLoaded" />
+        </TresGroup>
+      </Suspense> -->
     </TresCanvas>
     <ATH @start-game="" @pause-game="pause" @restart-game="" />
   </div>

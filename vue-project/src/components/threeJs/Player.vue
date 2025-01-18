@@ -1,6 +1,8 @@
 <script setup>
-import { reactive, ref, watch } from "vue";
+import { onMounted, ref, useTemplateRef, watch } from "vue";
 import { useFluidMovement } from "@/composables/player/useFluidMovement";
+import { generateUID } from "@/utils/generation";
+import Projectile from "./Projectile.vue";
 
 const props = defineProps({
   size: {
@@ -47,7 +49,39 @@ function onStopHitPlayer() {
   isHit.value = false;
 }
 
-defineExpose({ mesh, onHitPlayer, onStopHitPlayer });
+// Projectile
+const projectileRefs = useTemplateRef("projectileRefs");
+onMounted(() => {
+  window.addEventListener("keydown", shoot);
+});
+
+const projectiles = ref([]);
+function shoot(event) {
+  if (event.keyCode === 32) {
+    projectiles.value.push({
+      id: generateUID(),
+      position: {
+        x: position.value.x,
+        y: position.value.y,
+        z: 0,
+      },
+    });
+  }
+}
+
+function destroyProjectile(id) {
+  projectiles.value = projectiles.value.filter(
+    (projectile) => projectile.id !== id
+  );
+}
+
+watch(
+  () => projectileRefs.value,
+  (newVal) => console.log(newVal, projectileRefs.value),
+  { deep: true }
+);
+
+defineExpose({ mesh, onHitPlayer, onStopHitPlayer, projectileRefs });
 </script>
 
 <template>
@@ -62,4 +96,11 @@ defineExpose({ mesh, onHitPlayer, onStopHitPlayer });
       <TresMeshStandardMaterial :color="'#4D9C64'" />
     </TresMesh>
   </TresGroup>
+  <Projectile
+    v-for="projectile in projectiles"
+    :key="projectile.id"
+    ref="projectileRefs"
+    :position="projectile.position"
+    @destroy="() => destroyProjectile(projectile.id)"
+  />
 </template>

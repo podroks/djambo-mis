@@ -15,6 +15,9 @@ const props = defineProps({
   playerMesh: {
     default: undefined,
   },
+  playerProjectiles: {
+    default: undefined,
+  },
   playerPosition: {
     type: Object,
     default: () => ({ x: 0, y: 0, z: 0 }),
@@ -33,6 +36,14 @@ const { collision } = useCollisionDetection(
   virusMeshRef,
   playerPositionRef,
   positionZ
+);
+
+watch(
+  () => props.playerProjectiles,
+  (newVal) => {
+    console.log(newVal, newVal[0]);
+  },
+  { deep: true }
 );
 
 watch(
