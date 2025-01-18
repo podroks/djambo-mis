@@ -5,12 +5,12 @@ import { useMoveForward } from "@/composables/object/useMoveForward";
 
 const props = defineProps({
   size: {
-    type: Array,
-    default: () => [1, 1, 0.5],
+    type: Number,
+    default: 0.3,
   },
   positionInitial: {
     type: Array,
-    default: () => [-7, -4, 0],
+    default: () => [7, 4, 0],
   },
   playerMesh: {
     default: undefined,
@@ -24,13 +24,13 @@ const props = defineProps({
 const emit = defineEmits(["destroy"]);
 
 const playerMeshRef = computed(() => props.playerMesh);
-const virusMeshRef = ref(null);
+const cookieMeshRef = ref(null);
 const playerPositionRef = computed(() => props.playerPosition);
 
-const { positionZ } = useMoveForward();
+const { positionZ } = useMoveForward(-50, 0.25);
 const { collision } = useCollisionDetection(
   playerMeshRef,
-  virusMeshRef,
+  cookieMeshRef,
   playerPositionRef,
   positionZ
 );
@@ -54,18 +54,19 @@ watch(
 );
 
 onBeforeUnmount(() => {
-  if (virusMeshRef.value) {
-    virusMeshRef.value.parent.remove(virusMeshRef.value);
+  if (cookieMeshRef.value) {
+    cookieMeshRef.value.parent.remove(cookieMeshRef.value);
   }
 });
 </script>
 
 <template>
   <TresMesh
-    ref="virusMeshRef"
+    ref="cookieMeshRef"
     :position="[positionInitial[0], positionInitial[1], positionZ]"
+    :scale="[1, 1, 0.1]"
   >
-    <TresBoxGeometry :args="size" />
-    <TresMeshStandardMaterial :color="!collision ? '#236E43' : 'red'" />
+    <TresTorusGeometry :args="[size, size * 0.6, 16, 40]" />
+    <TresMeshStandardMaterial :color="!collision ? '#77CA84' : 'red'" />
   </TresMesh>
 </template>

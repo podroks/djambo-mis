@@ -7,6 +7,7 @@ import { onMounted } from "vue";
 import Player from "./components/threeJs/Player.vue";
 import Virus from "./components/threeJs/Virus.vue";
 import { MAX_X, MAX_Y, MIN_X, MIN_Y } from "./constants/position";
+import Cookie from "./components/threeJs/Cookie.vue";
 
 const { positionZ: objectPositionZ } = useMoveForward();
 
@@ -36,29 +37,54 @@ function generateVirus() {
   const positionInitial = [getRandom(MIN_X, MAX_X), getRandom(MIN_Y, MAX_Y), 0];
   const id = generateUID();
   if (objects.value.length <= 25) {
-    objects.value.push({ id, size, positionInitial });
+    objects.value.push({ id, size, positionInitial, type: "virus" });
   }
 }
 
-function destroyVirus(id) {
+function generateCookie() {
+  const size = getRandom(0.2, 0.5);
+  const positionInitial = [getRandom(MIN_X, MAX_X), getRandom(MIN_Y, MAX_Y), 0];
+  const id = generateUID();
+  if (objects.value.length <= 25) {
+    objects.value.push({ id, size, positionInitial, type: "cookie" });
+  }
+}
+
+function destroyObject(id) {
   objects.value = objects.value.filter((obj) => obj.id !== id);
 }
 
 function generateUID() {
-  return "id" + new Date().getTime();
+  return "id" + new Date().getTime() + getRandom(0, 20000);
 }
 
-function loopIntervalRendom(min = 600, max = 1300) {
+function loopIntervalRendom(
+  min = 600,
+  max = 1300,
+  generationFunction = generateVirus
+) {
   timeoutRef.value = setTimeout(() => {
-    generateVirus();
-    timeoutRef.value = loopIntervalRendom(min, max);
+    generationFunction();
+    timeoutRef.value = loopIntervalRendom(min, max, generationFunction);
   }, getRandom(min, max));
 }
 
-function pause () {
-  statePause.value = true
+function pause() {
+  statePause.value = true;
 }
 
+onMounted(() => {
+  loopIntervalRendom();
+
+  loopIntervalRendom(2000, 5000, generateCookie);
+});
+
+watch(
+  () => objects.value.length,
+  (x) => {
+    console.log("Debug: " + x + " objects in the scene");
+  }
+);
 </script>
 
 <template>
@@ -76,27 +102,27 @@ function pause () {
         :pause="statePause"
       />
 
-      <!-- <Virus :playerPosition :playerMesh="player?.mesh" /> -->
-      <Virus
-        v-for="obj in objects"
-        :key="obj.id"
-        :size="obj.size"
-        :position-initial="obj.positionInitial"
-        :playerPosition
-        :playerMesh="player?.mesh"
-        @destroy="() => destroyVirus(obj.id)"
-      />
+      <template v-for="obj in objects" :key="obj.id">
+        <Virus
+          v-if="obj.type === 'virus'"
+          :size="obj.size"
+          :position-initial="obj.positionInitial"
+          :playerPosition
+          :playerMesh="player?.mesh"
+          @destroy="() => destroyObject(obj.id)"
+        />
 
-      <!-- ref="virus" -->
-      <!-- <TresMesh
-        v-for="obj in objects"
-        :position="[obj.x, obj.y, objectPositionZ]"
-      >
-        <TresBoxGeometry :args="[1, 1, 0.5]" />
-        <TresMeshStandardMaterial :color="!collision ? '#77CA84' : 'red'" />
-      </TresMesh> -->
+        <Cookie
+          v-else-if="obj.type === 'cookie'"
+          :size="obj.size"
+          :position-initial="obj.positionInitial"
+          :playerPosition
+          :playerMesh="player?.mesh"
+          @destroy="() => destroyObject(obj.id)"
+        />
+      </template>
     </TresCanvas>
-    <ATH @start-game="" @pause-game="pause" @restart-game=""/>
+    <ATH @start-game="" @pause-game="pause" @restart-game="" />
   </div>
 </template>
 
