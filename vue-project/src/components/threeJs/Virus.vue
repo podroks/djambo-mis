@@ -21,7 +21,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["destroy"]);
+const emit = defineEmits(["destroy", "hit-player", "stop-hit-player"]);
 
 const playerMeshRef = computed(() => props.playerMesh);
 const virusMeshRef = ref(null);
@@ -48,7 +48,9 @@ watch(
   () => collision.value,
   (hasCollision) => {
     if (hasCollision) {
-      emit("destroy");
+      emit("hit-player");
+    } else {
+      emit("stop-hit-player");
     }
   }
 );
@@ -66,6 +68,6 @@ onBeforeUnmount(() => {
     :position="[positionInitial[0], positionInitial[1], positionZ]"
   >
     <TresBoxGeometry :args="size" />
-    <TresMeshStandardMaterial :color="!collision ? '#236E43' : 'red'" />
+    <TresMeshStandardMaterial color="#236E43" />
   </TresMesh>
 </template>

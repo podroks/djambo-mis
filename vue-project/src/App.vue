@@ -9,7 +9,7 @@ import Virus from "./components/threeJs/Virus.vue";
 import { MAX_X, MAX_Y, MIN_X, MIN_Y } from "./constants/position";
 import Cookie from "./components/threeJs/Cookie.vue";
 
-const { positionZ: objectPositionZ } = useMoveForward();
+const MAXIMUM_OBJECT = 23;
 
 const player = useTemplateRef("player");
 const playerPosition = ref({ x: 0, y: 0, z: 0 });
@@ -36,7 +36,7 @@ function generateVirus() {
   const size = [getRandom(1.5, 0.8), getRandom(1.5, 0.8), getRandom(1.5, 0.8)];
   const positionInitial = [getRandom(MIN_X, MAX_X), getRandom(MIN_Y, MAX_Y), 0];
   const id = generateUID();
-  if (objects.value.length <= 25) {
+  if (objects.value.length <= MAXIMUM_OBJECT) {
     objects.value.push({ id, size, positionInitial, type: "virus" });
   }
 }
@@ -85,6 +85,18 @@ watch(
     console.log("Debug: " + x + " objects in the scene");
   }
 );
+
+// Player comportement
+function onHitPlayer() {
+  if (player.value) {
+    player.value.onHitPlayer();
+  }
+}
+function onStopHitPlayer() {
+  if (player.value) {
+    player.value.onStopHitPlayer();
+  }
+}
 </script>
 
 <template>
@@ -110,6 +122,8 @@ watch(
           :playerPosition
           :playerMesh="player?.mesh"
           @destroy="() => destroyObject(obj.id)"
+          @hit-player="onHitPlayer"
+          @stop-hit-player="onStopHitPlayer"
         />
 
         <Cookie
