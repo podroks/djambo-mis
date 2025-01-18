@@ -12,8 +12,20 @@ const { positionZ: objectPositionZ } = useMoveForward();
 
 const player = useTemplateRef("player");
 const playerPosition = ref({ x: 0, y: 0, z: 0 });
-
 const objects = ref([]);
+const timeoutRef = ref(null); // A utiliser pour stoper la boucle infini
+const statePause = ref(false);
+
+onMounted(() => {
+  loopIntervalRendom();
+});
+
+watch(
+  () => objects.value.length,
+  (x) => {
+    console.log("Debug: " + x + " objects in the scene");
+  }
+);
 
 function getRandom(min, max) {
   return Math.random() * (max - min) + min;
@@ -36,7 +48,6 @@ function generateUID() {
   return "id" + new Date().getTime();
 }
 
-const timeoutRef = ref(null); // A utiliser pour stoper la boucle infini
 function loopIntervalRendom(min = 600, max = 1300) {
   timeoutRef.value = setTimeout(() => {
     generateVirus();
@@ -44,16 +55,10 @@ function loopIntervalRendom(min = 600, max = 1300) {
   }, getRandom(min, max));
 }
 
-onMounted(() => {
-  loopIntervalRendom();
-});
+function pause () {
+  statePause.value = true
+}
 
-watch(
-  () => objects.value.length,
-  (x) => {
-    console.log("Debug: " + x + " objects in the scene");
-  }
-);
 </script>
 
 <template>
@@ -68,6 +73,7 @@ watch(
             playerPosition = newPos;
           }
         "
+        :pause="statePause"
       />
 
       <!-- <Virus :playerPosition :playerMesh="player?.mesh" /> -->
@@ -90,7 +96,7 @@ watch(
         <TresMeshStandardMaterial :color="!collision ? '#77CA84' : 'red'" />
       </TresMesh> -->
     </TresCanvas>
-    <ATH></ATH>
+    <ATH @start-game="" @pause-game="pause" @restart-game=""/>
   </div>
 </template>
 

@@ -1,8 +1,9 @@
 import { MAX_X, MAX_Y, MIN_X, MIN_Y } from "@/constants/position";
 import { ref, onMounted, onUnmounted } from "vue";
 
-export function useFluidMovement(speed = 0.05) {
+export function useFluidMovement (speed = 0.05) {
   const position = ref({ x: 0, y: 0 });
+  const currentSpeed = ref(speed)
 
   const ArrowUp = "ArrowUp";
   const ArrowDown = "ArrowDown";
@@ -49,10 +50,10 @@ export function useFluidMovement(speed = 0.05) {
   };
 
   const animate = () => {
-    if (keys.ArrowUp && position.value.y < MAX_Y) position.value.y += speed;
-    if (keys.ArrowDown && position.value.y > MIN_Y) position.value.y -= speed;
-    if (keys.ArrowLeft && position.value.x > MIN_X) position.value.x -= speed;
-    if (keys.ArrowRight && position.value.x < MAX_X) position.value.x += speed;
+    if (keys.ArrowUp && position.value.y < MAX_Y) position.value.y += currentSpeed.value;
+    if (keys.ArrowDown && position.value.y > MIN_Y) position.value.y -= currentSpeed.value;
+    if (keys.ArrowLeft && position.value.x > MIN_X) position.value.x -= currentSpeed.value;
+    if (keys.ArrowRight && position.value.x < MAX_X) position.value.x += currentSpeed.value;
     requestAnimationFrame(animate);
   };
 
@@ -67,7 +68,17 @@ export function useFluidMovement(speed = 0.05) {
     window.removeEventListener("keyup", handleKeyUp);
   });
 
+  function onPause () {
+    currentSpeed.value = 0
+  }
+
+  function onResume () {
+    currentSpeed.value = speed
+  }
+
   return {
     position,
+    onPause,
+    onResume,
   };
 }
