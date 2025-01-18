@@ -4,21 +4,22 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "Silkscreen";
-    src: url("./font/Silkscreen-Regular.ttf");
-    font-weight: 400;
+  font-family: "Silkscreen";
+  src: url("/font/Silkscreen-Regular.ttf");
+  font-weight: 400;
 }
 
 @font-face {
-    font-family: "Silkscreen";
-    src: url("./font/Silkscreen-Bold.ttf");
-    font-weight: 700;
+  font-family: "Silkscreen";
+  src: url("/font/Silkscreen-Bold.ttf");
+  font-weight: 700;
 }
-  
-html, body {
-  font-family: 'Silkscreen', sans-serif;
+
+html,
+body {
+  font-family: "Silkscreen", sans-serif;
 }
 
 #app {
-  font-family: 'Silkscreen', sans-serif;
+  font-family: "Silkscreen", sans-serif;
 }
