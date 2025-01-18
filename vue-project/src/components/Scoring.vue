@@ -17,11 +17,11 @@ onMounted (() => {
 </script>
 
 <template>
-    <div class="flex flex-col p-10 text-mitt-green-600">
-        <span class="text-3xl">
+    <div class="flex flex-col text-mitt-green-600">
+        <span class="flex justify-end text-3xl">
             HIGH SCORE
         </span>
-        <div class="flex flex-col items-end p-2">
+        <div class="flex flex-col items-end mt-2">
             <div class="text-6xl ">
                 {{ scoreMatrix }}
             </div>
