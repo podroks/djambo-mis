@@ -84,6 +84,7 @@ function restart() {
   stateStart.value = false;
   statePause.value = false;
   stateRestart.value = true;
+  objects.value = [];
 }
 
 // Contrôles de la musique
