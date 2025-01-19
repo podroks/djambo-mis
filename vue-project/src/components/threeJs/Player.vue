@@ -47,6 +47,15 @@ watchEffect(() => {
     onResume();
   }
 });
+watchEffect(() => {
+  if (props.start) {
+    onStart();
+  } else if (props.pause) {
+    onPause();
+  } else if (props.restart) {
+    onResume();
+  }
+});
 
 function onHitPlayer() {
   isHit.value = true;
@@ -62,6 +71,9 @@ onMounted(() => {
   window.addEventListener("keydown", shoot);
 });
 
+// Référence pour le son du tir
+const audioBlaster = ref(null);
+
 const projectiles = ref([]);
 const canShoot = ref(true);
 const shootDelay = ref(200);
@@ -72,6 +84,8 @@ function shoot(event) {
     setTimeout(() => {
       canShoot.value = true;
     }, shootDelay.value);
+
+    // Ajouter un projectile
     projectiles.value.push({
       id: generateUID(),
       position: {
@@ -80,6 +94,17 @@ function shoot(event) {
         z: 0,
       },
     });
+
+    // Jouer le son
+    playBlasterSound();
+  }
+}
+
+// Fonction pour jouer le son
+function playBlasterSound() {
+  if (audioBlaster.value) {
+    audioBlaster.value.currentTime = 0; // Revenir au début du son
+    audioBlaster.value.play();
   }
 }
 
@@ -114,20 +139,26 @@ defineExpose({
       </TresGroup>
     </Suspense>
 
-    <TresMesh :position="[0, 0, -10]" :rotation="[Math.PI / 2, 0, 0]">
-      <TresCylinderGeometry :args="[0.015, 0.015, 20, 8]" />
-      <TresMeshStandardMaterial :color="'#4D9C64'" />
-    </TresMesh>
-  </TresGroup>
-  <Projectile
-    v-for="projectile in projectiles"
-    :key="projectile.id"
-    ref="projectileRefs"
-    :uid="projectile.id"
-    :position="projectile.position"
-    @destroy="() => destroyProjectile(projectile.id)"
-    :start="start"
-    :pause="pause"
-    :restart="restart"
-  />
+      <TresMesh :position="[0, 0, -10]" :rotation="[Math.PI / 2, 0, 0]">
+        <TresCylinderGeometry :args="[0.015, 0.015, 20, 8]" />
+        <TresMeshStandardMaterial :color="'#4D9C64'" />
+      </TresMesh>
+    </TresGroup>
+
+    <!-- Composant Projectile -->
+    <Projectile
+      v-for="projectile in projectiles"
+      :key="projectile.id"
+      ref="projectileRefs"
+      :uid="projectile.id"
+      :position="projectile.position"
+      @destroy="() => destroyProjectile(projectile.id)"
+      :start="start"
+      :pause="pause"
+      :restart="restart"
+    />
 </template>
+
+<style scoped>
+/* Ajoutez ici vos styles si nécessaire */
+</style>

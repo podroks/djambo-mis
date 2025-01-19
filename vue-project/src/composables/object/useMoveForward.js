@@ -17,7 +17,6 @@ export function useMoveForward (initialPositionZ = -50, speed = 0.1) {
       // Vérifie si la vitesse est inférieure à la vitesse maximale
       if (currentSpeed.value < maxSpeed) {
         currentSpeed.value = Math.min(currentSpeed.value + increment, maxSpeed);
-        console.log(`Current global speed: ${currentSpeed.value}`);
       } else {
         console.log("Maximum speed reached!");
       }

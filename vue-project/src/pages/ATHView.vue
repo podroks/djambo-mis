@@ -49,10 +49,15 @@
         countHit.value++
     }
 
+    function onActiveSound () {
+        emit('soundActive')
+    }
+
     defineExpose({
         onHitPlayerHealth
     });
-    const emit = defineEmits(['startGame', 'pauseGame', 'restartGame', 'resetHitHealth'])
+
+    const emit = defineEmits(['startGame', 'pauseGame', 'restartGame', 'resetHitHealth', 'soundActive'])
 </script>
 
 <template>
@@ -66,7 +71,7 @@
             <div class="flex flex-col justify-start w-1/3">
                 <Health ref="health" :hit-on-health="countHit"/>
             </div>
-            <ActionsBar v-if="countHit < 5" @start-action="startControl" @pause-action="pauseControl" @restart-action="restartControl"/>
+            <ActionsBar v-if="countHit < 5" @start-action="startControl" @pause-action="pauseControl" @restart-action="restartControl" @sound-activation="onActiveSound"/>
             <HardwarePlayer/>
         </div>
     </div>

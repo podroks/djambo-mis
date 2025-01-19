@@ -20,6 +20,7 @@ const timeoutRef = ref(null); // A utiliser pour stoper la boucle infini
 const stateStart = ref(false);
 const statePause = ref(false);
 const stateRestart = ref(false);
+const stateSound = ref(false);
 
 // Référence pour le lecteur audio
 const audioPlayer = useTemplateRef("audioPlayer");
@@ -88,16 +89,21 @@ function restart() {
 }
 
 // Contrôles de la musique
-function playMusic() {
-  if (audioPlayer.value) {
-    audioPlayer.value.play();
+function controlMusic() {
+  stateSound.value = !stateSound.value
+  if (stateSound.value) {
+    playMusic();
+  } else {
+    pauseMusic()
   }
 }
 
+function playMusic() {
+  audioPlayer.value.play();
+}
+
 function pauseMusic() {
-  if (audioPlayer.value) {
-    audioPlayer.value.pause();
-  }
+  audioPlayer.value.pause();
 }
 
 onMounted(() => {
@@ -187,13 +193,13 @@ function onDestroyProjectile(id) {
       @start-game="start"
       @pause-game="pause"
       @restart-game="restart"
+      @sound-active="controlMusic"
     />
     <audio
       ref="audioPlayer"
-      src="djambo-mis/vue-project/public/music/background_music.mp3"
-      autoplay
+      src="/music/background_music.mp3"
       loop
-    />
+   />
   </div>
 </template>
 

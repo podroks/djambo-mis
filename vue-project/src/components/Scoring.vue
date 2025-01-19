@@ -5,7 +5,7 @@ import { onMounted, ref } from "vue";
 const props = defineProps({
   score: {
     type: Number,
-    default: 1000,
+    default: 0,
   },
 });
 const scoreMatrix = ref(props.score);
