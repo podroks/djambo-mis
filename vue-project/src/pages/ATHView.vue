@@ -1,16 +1,24 @@
 <script setup>
-    import { ref, useTemplateRef } from 'vue'
+    import { ref, useTemplateRef, watch } from 'vue'
 
     import Scoring from "@/components/Scoring.vue"
     import Health from "@/components/Health.vue"
     import Timer from "@/components/Timer.vue"
     import HardwarePlayer from "@/components/HardwarePlayer.vue"
     import ActionsBar from "@/components/ActionsBar.vue"
+    import Modal from "@/components/Modal.vue"
 
     const timerRef = useTemplateRef('timer')
     const scoringRef = useTemplateRef('scoring')
     const countHit = ref(null)
 
+    watch (countHit, (newCountHit) => {
+        console.log('tu as pris un hit')
+        if(newCountHit >= 5) {
+            console.log('pause')
+            pauseControl()
+        }
+    })
 
     function startControl () {
         if(timerRef.value) {
@@ -53,11 +61,12 @@
             <Timer ref="timer"/>
             <Scoring ref="scoring"/>
         </div>
+        <Modal v-if="countHit >= 5" title-modal="GAME OVER" :icon-button-modal="['fas', 'power-off']" title-button="RESTART" class="m-auto" @button-action-modal="restartControl"/>
         <div class="flex justify-between">
             <div class="flex flex-col justify-start w-1/3">
                 <Health ref="health" :hit-on-health="countHit"/>
             </div>
-            <ActionsBar @start-action="startControl" @pause-action="pauseControl" @restart-action="restartControl"/>
+            <ActionsBar v-if="countHit < 5" @start-action="startControl" @pause-action="pauseControl" @restart-action="restartControl"/>
             <HardwarePlayer/>
         </div>
     </div>
