@@ -27,7 +27,7 @@ const emit = defineEmits(["position"]);
 const mesh = ref(null);
 const isHit = ref(false);
 
-const { position, onStart, onPause, onResume } = useFluidMovement(0.04);
+const { position, onStart, onPause, onResume } = useFluidMovement(0.1);
 
 watch(
   () => position.value,

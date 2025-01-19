@@ -8,7 +8,6 @@ import Virus from "./components/threeJs/Virus.vue";
 import { MAX_X, MAX_Y, MIN_X, MIN_Y } from "./constants/position";
 import Cookie from "./components/threeJs/Cookie.vue";
 import { generateUID, getRandom } from "./utils/generation";
-
 // import { GLTFModel } from "@tresjs/cientos";
 
 const MAXIMUM_OBJECT = 20;
@@ -21,6 +20,9 @@ const timeoutRef = ref(null); // A utiliser pour stoper la boucle infini
 const stateStart = ref(false);
 const statePause = ref(false);
 const stateRestart = ref(false);
+
+// Référence pour le lecteur audio
+const audioPlayer = useTemplateRef("audioPlayer");
 
 onMounted(() => {
   loopIntervalRendom();
@@ -82,6 +84,19 @@ function restart() {
   stateStart.value = false;
   statePause.value = false;
   stateRestart.value = true;
+}
+
+// Contrôles de la musique
+function playMusic() {
+  if (audioPlayer.value) {
+    audioPlayer.value.play();
+  }
+}
+
+function pauseMusic() {
+  if (audioPlayer.value) {
+    audioPlayer.value.pause();
+  }
 }
 
 onMounted(() => {
@@ -175,6 +190,7 @@ function onDestroyProjectile(id) {
       </Suspense> -->
     </TresCanvas>
     <ATH ref="ath" @start-game="start" @pause-game="pause" @restart-game="restart"/>
+    <audio ref="audioPlayer" src="djambo-mis/vue-project/public/music/background_music.mp3" autoplay loop />
   </div>
 </template>
 
