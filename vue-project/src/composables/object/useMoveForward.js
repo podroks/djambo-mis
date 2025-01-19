@@ -1,11 +1,10 @@
 import { ref, onMounted } from "vue";
 
-const maxSpeed = 0.8
+const maxSpeed = 0.8;
 
-export function useMoveForward (initialPositionZ = -50, speed = 0.1) {
+export function useMoveForward(initialPositionZ = -50, speed = 0.1) {
   const positionZ = ref(initialPositionZ);
-  const currentSpeed = ref(speed)
-
+  const currentSpeed = ref(speed);
 
   const animate = () => {
     positionZ.value += currentSpeed.value;
@@ -17,8 +16,9 @@ export function useMoveForward (initialPositionZ = -50, speed = 0.1) {
       // Vérifie si la vitesse est inférieure à la vitesse maximale
       if (currentSpeed.value < maxSpeed) {
         currentSpeed.value = Math.min(currentSpeed.value + increment, maxSpeed);
+        // console.log(`Current global speed: ${currentSpeed.value}`);
       } else {
-        console.log("Maximum speed reached!");
+        // console.log("Maximum speed reached!");
       }
     }, interval);
   };
@@ -31,17 +31,17 @@ export function useMoveForward (initialPositionZ = -50, speed = 0.1) {
     }
   });
 
-  function onStart () {
-    currentSpeed.value = speed
+  function onStart() {
+    currentSpeed.value = speed;
   }
 
-  function onPause () {
-    currentSpeed.value = 0
+  function onPause() {
+    currentSpeed.value = 0;
   }
 
-  function onResume () {
-    positionZ.value = initialPositionZ
-    currentSpeed.value = speed
+  function onResume() {
+    positionZ.value = initialPositionZ;
+    currentSpeed.value = speed;
   }
 
   return {

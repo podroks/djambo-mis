@@ -34,7 +34,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["destroy"]);
+const emit = defineEmits(["destroy", "destroy-on-collision"]);
 
 const playerMeshRef = computed(() => props.playerMesh);
 const cookieMeshRef = ref(null);
@@ -62,7 +62,7 @@ watch(
   () => hasCollisionPlayer.value,
   (hasCollision) => {
     if (hasCollision) {
-      emit("destroy");
+      emit("destroy-on-collision");
     }
   }
 );

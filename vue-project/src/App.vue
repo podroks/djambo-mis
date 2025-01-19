@@ -25,9 +25,9 @@ const stateSound = ref(false);
 // Référence pour le lecteur audio
 const audioPlayer = useTemplateRef("audioPlayer");
 
-onMounted(() => {
-  loopIntervalRendom();
-});
+// onMounted(() => {
+//   loopIntervalRendom();
+// });
 
 // watch(
 //   () => objects.value.length,
@@ -131,6 +131,16 @@ function onDestroyProjectile(id) {
   if (player.value) {
     player.value.destroyProjectile(id);
   }
+  if (athRef.value) {
+    athRef.value.addScore(300);
+  }
+}
+
+function onDestroyOnCollision(id) {
+  destroyObject(id);
+  if (athRef.value) {
+    athRef.value.addScoreCookie();
+  }
 }
 </script>
 
@@ -177,16 +187,12 @@ function onDestroyProjectile(id) {
           :playerMesh="player?.mesh"
           :playerProjectiles="player?.projectileRefs"
           @destroy="() => destroyObject(obj.id)"
+          @destroy-on-collision="() => onDestroyOnCollision(obj.id)"
           :start="stateStart"
           :pause="statePause"
           :restart="stateRestart"
         />
       </template>
-      <Suspense>
-        <TresGroup :rotation="[Math.PI / 2, 0, 0]" :scale="[0.15, 0.15, 0.15]">
-          <GLTFModel path="/models/virus.gltf" />
-        </TresGroup>
-      </Suspense>
     </TresCanvas>
     <ATH
       ref="ath"
