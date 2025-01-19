@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { useCollisionDetection } from "@/composables/useCollisionDetection";
 import { useMoveForward } from "@/composables/object/useMoveForward";
+import { GLTFModel } from "@tresjs/cientos";
 
 const props = defineProps({
   size: {
@@ -87,17 +88,15 @@ watch(
   }
 );
 
-watchEffect(
-  () => {
-    if (props.start) {
-      onStart();
-    } else if (props.pause) {
-      onPause();
-    } else if (props.restart) {
-      onResume();
-    }
+watchEffect(() => {
+  if (props.start) {
+    onStart();
+  } else if (props.pause) {
+    onPause();
+  } else if (props.restart) {
+    onResume();
   }
-);
+});
 
 onBeforeUnmount(() => {
   if (virusMeshRef.value) {
@@ -107,11 +106,17 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <TresMesh
+  <TresGroup
     ref="virusMeshRef"
     :position="[positionInitial[0], positionInitial[1], positionZ]"
   >
-    <TresBoxGeometry :args="size" />
-    <TresMeshStandardMaterial color="#236E43" />
-  </TresMesh>
+    <Suspense>
+      <TresGroup
+        :rotation="[Math.PI / 2, 0, 0]"
+        :scale="[size[0], size[0], size[0]]"
+      >
+        <GLTFModel path="/models/virus.gltf" />
+      </TresGroup>
+    </Suspense>
+  </TresGroup>
 </template>

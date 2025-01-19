@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { useCollisionDetection } from "@/composables/useCollisionDetection";
 import { useMoveForward } from "@/composables/object/useMoveForward";
+import { GLTFModel } from "@tresjs/cientos";
 
 const props = defineProps({
   size: {
@@ -66,17 +67,15 @@ watch(
   }
 );
 
-watchEffect(
-  () => {
-    if (props.start) {
-      onStart();
-    } else if (props.pause) {
-      onPause();
-    } else if (props.restart) {
-      onResume();
-    }
+watchEffect(() => {
+  if (props.start) {
+    onStart();
+  } else if (props.pause) {
+    onPause();
+  } else if (props.restart) {
+    onResume();
   }
-);
+});
 
 onBeforeUnmount(() => {
   if (cookieMeshRef.value) {
@@ -86,12 +85,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <TresMesh
+  <TresGroup
     ref="cookieMeshRef"
     :position="[positionInitial[0], positionInitial[1], positionZ]"
-    :scale="[1, 1, 0.1]"
   >
-    <TresTorusGeometry :args="[size, size * 0.6, 16, 40]" />
-    <TresMeshStandardMaterial color="#77CA84" />
-  </TresMesh>
+    <Suspense>
+      <TresGroup :rotation="[Math.PI / 2, 0, 0]" :scale="[0.15, 0.15, 0.15]">
+        <GLTFModel path="/models/cookie.gltf" />
+      </TresGroup>
+    </Suspense>
+  </TresGroup>
 </template>

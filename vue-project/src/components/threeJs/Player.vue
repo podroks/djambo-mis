@@ -2,6 +2,7 @@
 import { onMounted, ref, useTemplateRef, watch, watchEffect } from "vue";
 import { useFluidMovement } from "@/composables/player/useFluidMovement";
 import { generateUID } from "@/utils/generation";
+import { GLTFModel } from "@tresjs/cientos";
 import Projectile from "./Projectile.vue";
 
 const props = defineProps({
@@ -37,17 +38,15 @@ watch(
   { deep: true }
 );
 
-watchEffect(
-  () => {
-    if (props.start) {
-      onStart();
-    } else if (props.pause) {
-      onPause();
-    } else if (props.restart) {
-      onResume();
-    }
+watchEffect(() => {
+  if (props.start) {
+    onStart();
+  } else if (props.pause) {
+    onPause();
+  } else if (props.restart) {
+    onResume();
   }
-);
+});
 
 function onHitPlayer() {
   isHit.value = true;
@@ -102,9 +101,18 @@ defineExpose({
 <template>
   <TresGroup :position="[position.x, position.y, 0]">
     <TresMesh ref="mesh">
-      <TresBoxGeometry :args="size" />
-      <TresMeshStandardMaterial :color="isHit ? '#225034' : '#77CA84'" />
+      <TresBoxGeometry :args="[1, 0.5, 1]" />
+      <TresMeshStandardMaterial
+        :color="'#77CA84'"
+        :opacity="isHit ? 0.6 : 0.1"
+        :transparent="true"
+      />
     </TresMesh>
+    <Suspense>
+      <TresGroup :rotation="[0, Math.PI, 0]" :scale="[0.025, 0.025, 0.025]">
+        <GLTFModel path="/models/space_craft.gltf" />
+      </TresGroup>
+    </Suspense>
 
     <TresMesh :position="[0, 0, -10]" :rotation="[Math.PI / 2, 0, 0]">
       <TresCylinderGeometry :args="[0.015, 0.015, 20, 8]" />
