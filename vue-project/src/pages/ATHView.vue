@@ -59,6 +59,14 @@ function addScoreCookie(scoreToAdd = 1) {
   scoreCookies.value += scoreToAdd;
 }
 
+function resetScore() {
+  score.value = 0;
+}
+
+function resetScoreCookie() {
+  scoreCookies.value = 0;
+}
+
 function onActiveSound() {
   emit("soundActive");
 }
@@ -67,6 +75,8 @@ defineExpose({
   onHitPlayerHealth,
   addScore,
   addScoreCookie,
+  resetScore,
+  resetScoreCookie,
 });
 const emit = defineEmits([
   "startGame",
@@ -100,6 +110,7 @@ const emit = defineEmits([
         @start-action="startControl"
         @pause-action="pauseControl"
         @restart-action="restartControl"
+        @sound-activation="onActiveSound"
       />
       <HardwarePlayer />
     </div>

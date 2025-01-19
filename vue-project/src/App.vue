@@ -86,15 +86,19 @@ function restart() {
   statePause.value = false;
   stateRestart.value = true;
   objects.value = [];
+  if (athRef.value) {
+    athRef.value.resetScore();
+    athRef.value.resetScoreCookie();
+  }
 }
 
 // Contrôles de la musique
 function controlMusic() {
-  stateSound.value = !stateSound.value
+  stateSound.value = !stateSound.value;
   if (stateSound.value) {
     playMusic();
   } else {
-    pauseMusic()
+    pauseMusic();
   }
 }
 
@@ -201,11 +205,7 @@ function onDestroyOnCollision(id) {
       @restart-game="restart"
       @sound-active="controlMusic"
     />
-    <audio
-      ref="audioPlayer"
-      src="/music/background_music.mp3"
-      loop
-   />
+    <audio ref="audioPlayer" src="/music/background_music.mp3" loop />
   </div>
 </template>
 
