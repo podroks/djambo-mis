@@ -26,7 +26,7 @@ export function useMoveForward (initialPositionZ = -50, speed = 0.1) {
   onMounted(() => {
     animate();
     if (!increaseSpeed.hasRun) {
-      increaseSpeed(1000, 0.04); // Ajuste l'incrément si nécessaire
+      increaseSpeed(1000, 0.02); // Ajuste l'incrément si nécessaire
       increaseSpeed.hasRun = true;
     }
   });
