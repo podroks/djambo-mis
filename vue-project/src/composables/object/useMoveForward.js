@@ -2,7 +2,7 @@ import { ref, onMounted } from "vue";
 
 const maxSpeed = 0.8;
 
-export function useMoveForward(initialPositionZ = -50, speed = 0.1) {
+export function useMoveForward (initialPositionZ = -50, speed = 0.1) {
   const positionZ = ref(initialPositionZ);
   const currentSpeed = ref(speed);
 
@@ -26,20 +26,20 @@ export function useMoveForward(initialPositionZ = -50, speed = 0.1) {
   onMounted(() => {
     animate();
     if (!increaseSpeed.hasRun) {
-      increaseSpeed(6000, 0.008); // Ajuste l'incrément si nécessaire
+      increaseSpeed(1000, 0.04); // Ajuste l'incrément si nécessaire
       increaseSpeed.hasRun = true;
     }
   });
 
-  function onStart() {
+  function onStart () {
     currentSpeed.value = speed;
   }
 
-  function onPause() {
+  function onPause () {
     currentSpeed.value = 0;
   }
 
-  function onResume() {
+  function onResume () {
     positionZ.value = initialPositionZ;
     currentSpeed.value = speed;
   }
